@@ -4,19 +4,17 @@
 #include<vector>
 #include <string>
 using namespace std;
+
 struct  Login_aaa
 {
     string Login_ID;
     int Login_pw;
 };
 
-
-
 class MYSQLTCP
 {
     MYSQLTCP();
     ~MYSQLTCP();
-
 
 public:
     static MYSQLTCP* GetInstance()									//µ¥Àýº¯Êý
@@ -25,11 +23,9 @@ public:
         return &TcpMysql;
     }
 
-
 public:
-    bool ZhuChe(Login_aaa& t);
-    bool DengLu(string Login_ID, int Login_pw);
-
+    bool signup(Login_aaa& t);
+    bool signin(string Login_ID, int Login_pw);
 
 private:
     MYSQL* connect = mysql_init(NULL);

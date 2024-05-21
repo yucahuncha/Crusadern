@@ -17,24 +17,23 @@ MYSQLTCP::~MYSQLTCP()
     mysql_close(connect);
 }
 
-bool MYSQLTCP::ZhuChe(Login_aaa& stu)
+bool MYSQLTCP::signup(Login_aaa& stu)
 {
     string sql = "INSERT INTO Login_1 VALUES ('" + stu.Login_ID + "'," + to_string(stu.Login_pw) + ");";
     const char* str = sql.c_str();
     if (mysql_query(connect, str))
     {
         cout << "falied zhuche :ERROR:" << mysql_error(connect);
-        exit(1);
+        return FALSE;
     }
     else
     {
-        cout << "注册成功" << endl;
+        //cout << "注册成功" << endl;
+        return TRUE;
     }
-    return false;
 }
 
-bool MYSQLTCP::DengLu(string Login_ID, int Login_pw)
-{
+bool MYSQLTCP::signin(std::string Login_ID, int Login_pw) {
     string sql = "SELECT * FROM Login_1 WHERE Login_id = '" + Login_ID + "';";
     const char* str = sql.c_str();
     if (mysql_query(connect, str))																							//判断是否出错，并打印错误信息
@@ -50,14 +49,14 @@ bool MYSQLTCP::DengLu(string Login_ID, int Login_pw)
     {
         stu.Login_ID = row[0];
         stu.Login_pw = atoi(row[1]);
-    }
-    else
-    {
-        return false;
-    }
-    if (stu.Login_pw == Login_pw)                           //与输入的账号密码比对
-    {
-        return true;
+        if (stu.Login_pw == Login_pw)                           //与输入的账号密码比对
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
     else
     {

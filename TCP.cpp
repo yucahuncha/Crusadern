@@ -14,7 +14,6 @@ bool init_Socket()
         err("WSAStartup");
         return false;
     }
-
     return true;
 }
 
