@@ -1,30 +1,18 @@
-cmake_minimum_required(VERSION 3.27)
-project(Crusadern)
+cmake_minimum_required(VERSION 3.25)
+project(Linux_Crusadern)
 
-# 设置 C++ 标准
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
 
-# 收集源文件
-file(GLOB SRC_FILES
-        "${PROJECT_SOURCE_DIR}/*.h"
-        "${PROJECT_SOURCE_DIR}/*.cpp"
-        "${PROJECT_SOURCE_DIR}/*.c"
-        "${PROJECT_SOURCE_DIR}/*.cc"
-)
-
-# 设置包含目录
-include_directories(${PROJECT_SOURCE_DIR}/Mysql_Connect/)
-
-# 设置库目录
-set(DLL_DIR "D:/CLIONE/Crusadern/Mysql_Connect/lib")
-link_directories(${DLL_DIR})
+# 显式设置MySQL头文件和库文件的路径
+include_directories(/usr/include/mysql)
+link_directories(/usr/lib)
 
 # 添加可执行文件
-add_executable(Crusadern ${SRC_FILES}
+add_executable(Linux_Crusadern main.cpp
+        MysqlTCP.cpp
+        MysqlTCP.h
         TCP.cpp
-        TCP.h
-        MYSQLTCP.cpp
-        MYSQLTCP.h)
+        TCP.h)
 
-# 链接库
-target_link_libraries(Crusadern libmysql.lib ws2_32.lib)
+# 链接MySQL客户端库
+target_link_libraries(Linux_Crusadern mysqlclient)

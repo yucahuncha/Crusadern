@@ -1,0 +1,3 @@
+/home/ubuntu/Clion/Linux/Clion/Linux-Crusadern/cmake-build-ubuntu-debug/CMakeFiles/Linux_Crusadern.dir
+/home/ubuntu/Clion/Linux/Clion/Linux-Crusadern/cmake-build-ubuntu-debug/CMakeFiles/edit_cache.dir
+/home/ubuntu/Clion/Linux/Clion/Linux-Crusadern/cmake-build-ubuntu-debug/CMakeFiles/rebuild_cache.dir

@@ -1,66 +1,74 @@
 #include <iostream>
-#include <string>
-#include <sstream>
-#include<windows.h>
+#include "MysqlTCP.h"
 #include "TCP.h"
-#include "MYSQLTCP.h"
 int main() {
-    init_Socket();					//打开socket连接
-    SOCKET serfd = createServerSocket();
 
+    // 1.创建监听的套接字
+    int fd = socket(AF_INET, SOCK_STREAM,0);
+    if (fd == -1)//判断是否成功
+    {
+        ERROR("socket");
+        exit(-1);
+        /* code */
+    }
+
+    //绑定本地的IP端口
+    struct sockaddr_in saddr;
+    saddr.sin_family = AF_INET;             //IP地址协议
+    saddr.sin_port = htons(10000);           //端口
+    saddr.sin_addr.s_addr = INADDR_ANY;     //绑定任意IP地址   = 0.0.0.0
+    int ret = bind(fd, (struct sockaddr*)&saddr,sizeof(saddr));
+    if (ret == -1)
+    {
+        ERROR("bind");
+        std::cout<<"bind"<<"-1";
+        /* code */
+        return -1;
+    }
     int num = 1;
-
     while (true)
     {
+        //设置监听
+        ret = listen(fd,128);
+        if (ret == -1)
+        {
+            ERROR("listen");
+            /* code */
+        }
 
+        //设置阻塞，等待连接
         std::cout << "Wait SignUP Client Conncnt......     NO."<< num << std::endl;
         num++;
-        //如果有客户端请求连接，那么
-        listen(serfd, 10);
-        SOCKET clifd =	accept(serfd, NULL, NULL);
-
-        if (INVALID_SOCKET == clifd)
+        struct sockaddr_in caddr;
+        int addrlen = sizeof(caddr);
+        int cfd = accept(fd,NULL,NULL);
+        if (cfd == -1)
         {
-            err("accept");
+            ERROR("accept");
+            return -1;
         }
+
+
 
         char buf[BUFSIZ];
         memset(buf, 0, sizeof(buf));
 
         //接收数据
-        if (0 < recv(clifd, buf, BUFSIZ, 0))
+        if (0 < recv(cfd, buf, BUFSIZ, 0))
         {
             std::cout << "RECV:" << buf << std::endl;
         }
-
         std::string input = buf;                                    //将一个字符串分成两个，以空格隔开
         std::string str1;
         int str2;
         std::istringstream iss(input);
         iss >> str1 >> str2;
 
-        memset(buf, 0, sizeof(buf));                //清空buf里的数据
 
-        /*Sign UP部分
-        char source[13] = "注册成功";
-        char error[13] = "注册失败";
-        Login_aaa stu = {str1,str2};
-
-        if (MYSQLTCP::GetInstance()->signup(stu))
-        {
-            strcpy(buf, source);
-        }
-        else
-        {
-            strcpy(buf, error);
-        }*/
-
-
-        //Sign IN部分
         char source[13] = "登录成功";
         char error[13] = "登录失败";
 
-        if (MYSQLTCP::GetInstance()->signin(str1,str2))
+        if (MysqlTCP::GetInstance()->signin(str1,str2))
         {
             strcpy(buf, source);
         }
@@ -69,18 +77,12 @@ int main() {
             strcpy(buf, error);
         }
 
+            //发送数据
+        send(cfd,buf,strlen(buf)+1,0);
 
-        //发送消息
-        if (SOCKET_ERROR == send(clifd, buf, strlen(buf), 0))
-        {
-            err("SEND");
-        };
-        memset(buf, 0, sizeof(buf));
-
-        //关闭链接重新回到等待连接阶段
-        closesocket(clifd);
+        //关闭连接
+        close(cfd);
     }
-
-    closesocket(serfd); //关闭socket连接
-    close_Socket();
+    close(fd);
+    return 0;
 }
