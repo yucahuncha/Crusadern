@@ -24,8 +24,8 @@ public:
     }
 
 public:
-    bool signup(Login_aaa& t);
-    bool signin(string Login_ID, int Login_pw);
+    bool signup(Login_aaa& t);                                  //注册部分
+    bool signin(string Login_ID, int Login_pw);      //登录部分
 
 private:
     MYSQL* connect = mysql_init(NULL);

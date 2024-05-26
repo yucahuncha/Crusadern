@@ -58,3 +58,65 @@ SOCKET createServerSocket()
     //3.监听电话
     return fd;
 }
+
+//子线程函数部分
+void threadFunction(SOCKET clifd) {
+    char buf[BUFSIZ];
+    memset(buf, 0, sizeof(buf));
+
+    //接收数据
+    if (0 < recv(clifd, buf, BUFSIZ, 0))
+    {
+        std::cout << "RECV:" << buf <<std::endl;
+    }
+
+    std::string input = buf;
+    //将一个字符串分成两个，以空格隔开
+    int SUM;
+    std::string str1;
+    int str2;
+
+    std::istringstream iss(input);
+    iss >> SUM >>str1>>str2;
+    //NUM=1：登录模块    NUM = 2:注册模块
+    memset(buf, 0, sizeof(buf));                //清空buf里的数据
+
+
+    char source[13] = "注册成功";
+    char error[13] = "注册失败";
+
+    if (SUM == 1)
+    {
+        Login_aaa stu = {str1,str2};
+
+        if (MYSQLTCP::GetInstance()->signup(stu))
+        {
+            strcpy(buf, source);
+        }
+        else {
+            strcpy(buf, error);
+        }
+    }
+    else if(SUM == 2)
+    {
+        if (MYSQLTCP::GetInstance()->signin(str1,str2))
+        {
+            strcpy(buf, source);
+        }
+        else
+        {
+            strcpy(buf, error);
+        }
+    }
+
+    //发送消息
+    if (SOCKET_ERROR == send(clifd, buf, strlen(buf), 0))
+    {
+        err("SEND");
+    };
+    memset(buf, 0, sizeof(buf));
+
+    //关闭链接重新回到等待连接阶段
+    closesocket(clifd);
+}
+
