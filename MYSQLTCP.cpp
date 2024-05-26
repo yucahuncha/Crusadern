@@ -3,8 +3,8 @@
 
 MYSQLTCP::MYSQLTCP()
 {
-    mysql_options(connect, MYSQL_SET_CHARSET_NAME, "GBK");
-    if (!mysql_real_connect(connect, host, name, pw, database_name, port, NULL, 0))
+    mysql_options(connect, MYSQL_SET_CHARSET_NAME, "GBK");               //åˆå§‹åŒ–æ•°æ®åº“è¿æ¥ï¼Œè®¾ç½®ç¼–ç ä¸ºGBK
+    if (!mysql_real_connect(connect, host, name, pw, database_name, port, NULL, 0))        //è¿æ¥æ•°æ®åº“ï¼Œå¹¶æŠ¥é”™å¤„ç†
     {
         cout << "fialid to connect:ERROR:" << mysql_error(connect);
         exit(1);
@@ -28,7 +28,7 @@ bool MYSQLTCP::signup(Login_aaa& stu)
     }
     else
     {
-        //cout << "×¢²á³É¹¦" << endl;
+        //cout << "æ³¨å†ŒæˆåŠŸ" << endl;
         return TRUE;
     }
 }
@@ -36,7 +36,7 @@ bool MYSQLTCP::signup(Login_aaa& stu)
 bool MYSQLTCP::signin(std::string Login_ID, int Login_pw) {
     string sql = "SELECT * FROM Login_1 WHERE Login_id = '" + Login_ID + "';";
     const char* str = sql.c_str();
-    if (mysql_query(connect, str))																							//ÅĞ¶ÏÊÇ·ñ³ö´í£¬²¢´òÓ¡´íÎóĞÅÏ¢
+    if (mysql_query(connect, str))																							//åˆ¤æ–­æ˜¯å¦å‡ºé”™ï¼Œå¹¶æ‰“å°é”™è¯¯ä¿¡æ¯
     {
         fprintf(stderr, "failed to select data: Error:%s\n", mysql_error(connect));
         return false;
@@ -45,11 +45,11 @@ bool MYSQLTCP::signin(std::string Login_ID, int Login_pw) {
     MYSQL_ROW row;
     row = mysql_fetch_row(res);
     Login_aaa stu;
-    if (row != NULL)                    //ÅĞ¶ÏÊÇ·ñÎª¿Õ¼¯
+    if (row != NULL)                    //åˆ¤æ–­æ˜¯å¦ä¸ºç©ºé›†
     {
         stu.Login_ID = row[0];
         stu.Login_pw = atoi(row[1]);
-        if (stu.Login_pw == Login_pw)                           //ÓëÊäÈëµÄÕËºÅÃÜÂë±È¶Ô
+        if (stu.Login_pw == Login_pw)                           //ä¸è¾“å…¥çš„è´¦å·å¯†ç æ¯”å¯¹
         {
             return true;
         }
